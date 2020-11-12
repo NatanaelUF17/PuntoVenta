@@ -9,15 +9,15 @@ namespace PuntoVenta.AppDbContext
 {
     public class Context : DbContext
     {
+        public Context(DbContextOptions<Context> options) : base (options)
+        {
+
+        }
+
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Sale> Sales { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite(@"Data Source=Data/punto_venta.db");
-        }
     }
 }

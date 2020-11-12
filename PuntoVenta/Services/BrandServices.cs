@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using PuntoVenta.AppDbContext;
 using PuntoVenta.Models;
 using PuntoVenta.Repository.MasterRepository;
@@ -11,9 +12,8 @@ namespace PuntoVenta.Services
 {
     public class BrandServices : IMasterRepository<Brand>
     {
-        public BrandServices(Context context) { _context = context; }
-
         private readonly Context _context;
+        public BrandServices(Context context) { _context = context; }
 
         public async Task Save(Brand brand)
         {
