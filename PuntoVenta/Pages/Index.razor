@@ -4,4 +4,13 @@
 
 Welcome to your new app.
 
+<EditForm Model="c">
+    <InputNumber @bind-Value="c." />
+</EditForm>
+
+
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    Category c = new Category();
+}
