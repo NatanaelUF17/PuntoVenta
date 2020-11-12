@@ -13,5 +13,8 @@ namespace PuntoVenta.Models
         [Required(ErrorMessage = "Debe completar el campo nombre!")]
         [MinLength(2, ErrorMessage = "Debe contener mas de dos caracteres!")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "Debe completar el campo apellido!")]
+        [MinLength(2, ErrorMessage = "Debe contener mas de dos caracteres!")]
+        public string LastName { get; set; }
     }
 }

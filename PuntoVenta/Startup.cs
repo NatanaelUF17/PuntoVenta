@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PuntoVenta.AppDbContext;
-using PuntoVenta.Data;
 using PuntoVenta.Services;
 using System;
 using System.Collections.Generic;
@@ -33,12 +32,11 @@ namespace PuntoVenta
             services.AddServerSideBlazor();
             services.AddDbContext<Context>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<ProductServices>();
-            services.AddSingleton<ClientServices>();
-            services.AddSingleton<SaleServices>();
-            services.AddSingleton<BrandServices>();
-            services.AddSingleton<CategoryServices>();
+            services.AddScoped<ProductServices>();
+            services.AddScoped<ClientServices>();
+            services.AddScoped<SaleServices>();
+            services.AddScoped<BrandServices>();
+            services.AddScoped<CategoryServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

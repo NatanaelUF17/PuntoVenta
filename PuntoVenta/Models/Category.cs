@@ -13,10 +13,5 @@ namespace PuntoVenta.Models
         [Required(ErrorMessage = "Debe completar el campo categoria!")]
         [MinLength(2, ErrorMessage = "Debe contener mas de dos caracteres!")]
         public string Name { get; set; }
-
-        public Category()
-        {
-
-        }
     }
 }
