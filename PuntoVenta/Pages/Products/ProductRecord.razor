@@ -165,7 +165,6 @@
             else
             {
                 toast.ShowWarning("No se pudo guardar el producto! 😣");
-
             }
         }
         catch (Exception e)
@@ -179,9 +178,12 @@
     {
         try
         {
-            await productServices.Delete(product.Id);
-            toast.ShowSuccess("Se elimino el producto! 😄");
-            New();
+            if(product.Id > 0)
+            {
+                await productServices.Delete(product.Id);
+                toast.ShowSuccess("Se elimino el producto! 😄");
+                New();
+            }
         }
         catch (Exception e)
         {
@@ -197,12 +199,15 @@
         {
             if (product.Id > 0)
             {
-                var isFound = await productServices.GetOne(product.Id);
+                var isProductFound = await productServices.GetOne(product.Id);
 
-                if (isFound != null)
+                if (isProductFound != null)
                 {
-                    this.product = isFound;
+                    this.product = isProductFound;
                     Id = this.product.Id;
+                    this.brandId = product.BrandId.ToString();
+                    this.categoryId = product.CategoryId.ToString();
+
                     toast.ShowSuccess("Producto encontrado! 😄");
                 }
                 else
