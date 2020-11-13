@@ -1,0 +1,201 @@
+﻿@page "/Producto"
+@page "/Producto/{Id:int}"
+
+@inject ProductServices productServices
+@inject IToastService toast
+
+<EditForm Model="product" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        @*Header*@
+        <div class="card-header">
+            <div class="form-group">
+                <h5>Productos</h5>
+            </div>
+        </div>
+
+        @*Body*@
+        <div class="card-body">
+            <form>
+                <div class="form-row align-items-md-center align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="buscar">Buscar</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="product.Id" class="form-control col-4" />
+                                <div class="form-group-append">
+                                    <button class="btn btn-primary input-group-text" type="button" @onclick="Search">
+                                        <span class="oi oi-eye"></span> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Name*@
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <InputText @bind-Value="product.Name" class="form-control" />
+                    <ValidationMessage For="@(() => product.Name)" />
+                    <small>
+                        Ingresar el nombres del producto
+                    </small>
+                </div>
+
+                @*LastName*@
+                <div class="form-group">
+                    <label>Marca</label>
+                    <InputSelect @bind-Value="product.BrandId" class="form-control">
+                        <option value="0">Elije una marca</option>
+                        @foreach(var brand in brands)
+                        {
+                            <option value="@brand.Id">@brand.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => product.BrandId)" />
+                    <small>
+                        Seleccione una marca
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <InputSelect @bind-Value="product.CategoryId" class="form-control">
+                        <option value="0">Elije una categoria</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => product.CategoryId)" />
+                    <small>
+                        Seleccione una categoria
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Stock</label>
+                    <InputText @bind-Value="product.Stock" class="form-control" />
+                    <ValidationMessage For="@(() => product.Stock.)" />
+                    <small>
+                        Ingrese la cantidad del stock
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Precio</label>
+                    <InputText @bind-Value="product.Price" class="form-control" />
+                    <ValidationMessage For="@(() => product.Price)" />
+                    <small>
+                        Ingrese el precio
+                    </small>
+                </div>
+            </form>
+
+        </div>
+
+        @*Fotter*@
+        <div class="card-footer">
+            <div class="form-group text-center">
+                <button type="button" class="btn btn-primary" @onclick="New">
+                    <span class="oi oi-plus"></span> Nuevo
+                </button>
+                <button type="submit" class="btn btn-success" @onclick="Save">
+                    <span class="oi oi-document">Guardar</span>
+                </button>
+                <button type="button" class="btn btn-danger" @onclick="Delete">
+                    <span class="oi oi-delete">Eliminar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    Product product = new Product();
+    [Parameter] public int Id { get; set; }
+
+    List<Brand> brands = new List<Brand>();
+    List<Category> categories = new List<Category>();
+
+    protected override void OnInitialized()
+    {
+        if (Id > 0) Search();
+
+        New();
+    }
+
+    protected void New()
+    {
+        product = new Product();
+    }
+
+    protected void Save()
+    {
+
+        try
+        {
+            if (productServices.Save(product).IsCompleted)
+            {
+                New();
+                toast.ShowSuccess("Se guardo el producto! 😄");
+            }
+            else
+            {
+                toast.ShowWarning("No se pudo guardar el producto! 😣");
+
+            }
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+
+    protected async void Delete()
+    {
+        try
+        {
+            await productServices.Delete(product.Id);
+            toast.ShowSuccess("Se elimino el producto! 😄");
+            New();
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+
+    protected async void Search()
+    {
+
+        try
+        {
+            if (product.Id > 0)
+            {
+                var isFound = await productServices.GetOne(product.Id);
+
+                if (isFound != null)
+                {
+                    this.product = isFound;
+                    Id = this.product.Id;
+                    toast.ShowSuccess("Producto encontrado! 😄");
+                }
+                else
+                {
+                    toast.ShowWarning("No existe un producto con ese id 🙄");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+}

@@ -1,17 +1,17 @@
-﻿@page "/Categoria"
-@page "/Categoria/{Id:int}" 
+﻿@page "/Cliente"
+@page "/Cliente/{Id:int}"
 
-@inject CategoryServices categoryServices
+@inject ClientServices clientServices
 @inject IToastService toast
 
-<EditForm Model="category" OnValidSubmit="Save">
-    <DataAnnotationsValidator/>
+<EditForm Model="client" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
 
     <div class="card">
         @*Header*@
         <div class="card-header">
             <div class="form-group">
-                <h5>Categorias</h5>
+                <h5>Clientes</h5>
             </div>
         </div>
 
@@ -23,7 +23,7 @@
                         <div class="form-group">
                             <label for="buscar">Buscar</label>
                             <div class="input-group">
-                                <InputNumber @bind-Value="category.Id" class="form-control col-4" />
+                                <InputNumber @bind-Value="client.Id" class="form-control col-4" />
                                 <div class="form-group-append">
                                     <button class="btn btn-primary input-group-text" type="button" @onclick="Search">
                                         <span class="oi oi-eye"></span> Buscar
@@ -36,11 +36,21 @@
 
                 @*Name*@
                 <div class="form-group">
-                    <label for="NombreCategoriaTextBox">Nombre Categoria</label>
-                    <InputText @bind-Value="category.Name" class="form-control"/>
-                    <ValidationMessage For="@(() => category.Name)" />
+                    <label>Nombres</label>
+                    <InputText @bind-Value="client.Name" class="form-control" />
+                    <ValidationMessage For="@(() => client.Name)" />
                     <small>
-                        Ingresar el(os) nombres de la categoria
+                        Ingresar el(os) nombres del cliente
+                    </small>
+                </div>
+
+                @*LastName*@
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    <InputText @bind-Value="client.LastName" class="form-control" />
+                    <ValidationMessage For="@(() => client.LastName)" />
+                    <small>
+                        Ingresar el apellido del cliente
                     </small>
                 </div>
             </form>
@@ -66,7 +76,7 @@
 
 @code {
 
-    Category category = new Category();
+    Client client = new Client();
     [Parameter] public int Id { get; set; }
 
     protected override void OnInitialized()
@@ -78,7 +88,7 @@
 
     protected void New()
     {
-        category = new Category();
+        client = new Client();
     }
 
     protected void Save()
@@ -86,14 +96,14 @@
 
         try
         {
-            if(categoryServices.Save(category).IsCompleted)
+            if (clientServices.Save(client).IsCompleted)
             {
                 New();
-                toast.ShowSuccess("Se guardo la categoria! 😄");
+                toast.ShowSuccess("Se guardo el cliente! 😄");
             }
             else
             {
-                toast.ShowWarning("No se pudo guardar la categoria! 😣");
+                toast.ShowWarning("No se pudo guardar el cliente! 😣");
 
             }
         }
@@ -108,8 +118,8 @@
     {
         try
         {
-            await categoryServices.Delete(category.Id);
-            toast.ShowSuccess("Se elimino la categoria! 😄");
+            await clientServices.Delete(client.Id);
+            toast.ShowSuccess("Se elimino el cliente! 😄");
             New();
         }
         catch (Exception e)
@@ -124,19 +134,19 @@
 
         try
         {
-            if(category.Id > 0)
+            if (client.Id > 0)
             {
-                var isFound = await categoryServices.GetOne(category.Id);
+                var isFound = await clientServices.GetOne(client.Id);
 
-                if(isFound != null)
+                if (isFound != null)
                 {
-                    this.category = isFound;
-                    Id = this.category.Id;
-                    toast.ShowSuccess("Categoria encontrada! 😄");
+                    this.client = isFound;
+                    Id = this.client.Id;
+                    toast.ShowSuccess("Cliente encontrado! 😄");
                 }
                 else
                 {
-                    toast.ShowWarning("No existe una categoria con ese id 🙄");
+                    toast.ShowWarning("No existe un cliente con ese id 🙄");
                 }
             }
         }
@@ -146,4 +156,4 @@
             toast.ShowError($"{e.Message}");
         }
     }
-} 
+}

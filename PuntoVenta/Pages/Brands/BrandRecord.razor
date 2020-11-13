@@ -1,17 +1,17 @@
-﻿@page "/Categoria"
-@page "/Categoria/{Id:int}" 
+﻿@page "/Marca"
+@page "/Marca/{Id:int}"
 
-@inject CategoryServices categoryServices
+@inject BrandServices brandServices
 @inject IToastService toast
 
-<EditForm Model="category" OnValidSubmit="Save">
-    <DataAnnotationsValidator/>
+<EditForm Model="brand" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
 
     <div class="card">
         @*Header*@
         <div class="card-header">
             <div class="form-group">
-                <h5>Categorias</h5>
+                <h5>Marcas</h5>
             </div>
         </div>
 
@@ -23,7 +23,7 @@
                         <div class="form-group">
                             <label for="buscar">Buscar</label>
                             <div class="input-group">
-                                <InputNumber @bind-Value="category.Id" class="form-control col-4" />
+                                <InputNumber @bind-Value="brand.Id" class="form-control col-4" />
                                 <div class="form-group-append">
                                     <button class="btn btn-primary input-group-text" type="button" @onclick="Search">
                                         <span class="oi oi-eye"></span> Buscar
@@ -36,11 +36,11 @@
 
                 @*Name*@
                 <div class="form-group">
-                    <label for="NombreCategoriaTextBox">Nombre Categoria</label>
-                    <InputText @bind-Value="category.Name" class="form-control"/>
-                    <ValidationMessage For="@(() => category.Name)" />
+                    <label for="NombreCategoriaTextBox">Nombre Marca</label>
+                    <InputText @bind-Value="brand.Name" class="form-control" />
+                    <ValidationMessage For="@(() => brand.Name)" />
                     <small>
-                        Ingresar el(os) nombres de la categoria
+                        Ingresar el nombre de la categoria
                     </small>
                 </div>
             </form>
@@ -66,7 +66,7 @@
 
 @code {
 
-    Category category = new Category();
+    Brand brand = new Brand();
     [Parameter] public int Id { get; set; }
 
     protected override void OnInitialized()
@@ -78,7 +78,7 @@
 
     protected void New()
     {
-        category = new Category();
+        brand = new Brand();
     }
 
     protected void Save()
@@ -86,14 +86,14 @@
 
         try
         {
-            if(categoryServices.Save(category).IsCompleted)
+            if (brandServices.Save(brand).IsCompleted)
             {
                 New();
-                toast.ShowSuccess("Se guardo la categoria! 😄");
+                toast.ShowSuccess("Se guardo la marca! 😄");
             }
             else
             {
-                toast.ShowWarning("No se pudo guardar la categoria! 😣");
+                toast.ShowWarning("No se pudo guardar la marca! 😣");
 
             }
         }
@@ -108,8 +108,8 @@
     {
         try
         {
-            await categoryServices.Delete(category.Id);
-            toast.ShowSuccess("Se elimino la categoria! 😄");
+            await brandServices.Delete(brand.Id);
+            toast.ShowSuccess("Se elimino la marca! 😄");
             New();
         }
         catch (Exception e)
@@ -124,19 +124,19 @@
 
         try
         {
-            if(category.Id > 0)
+            if (brand.Id > 0)
             {
-                var isFound = await categoryServices.GetOne(category.Id);
+                var isFound = await brandServices.GetOne(brand.Id);
 
-                if(isFound != null)
+                if (isFound != null)
                 {
-                    this.category = isFound;
-                    Id = this.category.Id;
-                    toast.ShowSuccess("Categoria encontrada! 😄");
+                    this.brand = isFound;
+                    Id = this.brand.Id;
+                    toast.ShowSuccess("Marca encontrada! 😄");
                 }
                 else
                 {
-                    toast.ShowWarning("No existe una categoria con ese id 🙄");
+                    toast.ShowWarning("No existe una marca con ese id 🙄");
                 }
             }
         }
@@ -146,4 +146,4 @@
             toast.ShowError($"{e.Message}");
         }
     }
-} 
+}
