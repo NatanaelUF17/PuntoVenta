@@ -77,8 +77,8 @@
 
                 <div class="form-group">
                     <label>Stock</label>
-                    <InputText @bind-Value="product.Stock" class="form-control" />
-                    <ValidationMessage For="@(() => product.Stock.)" />
+                    <InputNumber @bind-Value="product.Stock" class="form-control" />
+                    <ValidationMessage For="@(() => product.Stock)" />
                     <small>
                         Ingrese la cantidad del stock
                     </small>
@@ -86,7 +86,7 @@
 
                 <div class="form-group">
                     <label>Precio</label>
-                    <InputText @bind-Value="product.Price" class="form-control" />
+                    <InputNumber @bind-Value="product.Price" class="form-control" />
                     <ValidationMessage For="@(() => product.Price)" />
                     <small>
                         Ingrese el precio
