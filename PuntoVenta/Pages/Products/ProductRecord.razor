@@ -2,6 +2,8 @@
 @page "/Producto/{Id:int}"
 
 @inject ProductServices productServices
+@inject BrandServices brandServices
+@inject CategoryServices categoryServices
 @inject IToastService toast
 
 <EditForm Model="product" OnValidSubmit="Save">
@@ -47,9 +49,9 @@
                 @*LastName*@
                 <div class="form-group">
                     <label>Marca</label>
-                    <InputSelect @bind-Value="product.BrandId" class="form-control">
+                    <InputSelect @bind-Value="@brandId" class="form-control">
                         <option value="0">Elije una marca</option>
-                        @foreach(var brand in brands)
+                        @foreach (var brand in brands)
                         {
                             <option value="@brand.Id">@brand.Name</option>
                         }
@@ -62,7 +64,7 @@
 
                 <div class="form-group">
                     <label>Categoria</label>
-                    <InputSelect @bind-Value="product.CategoryId" class="form-control">
+                    <InputSelect @bind-Value="@categoryId" class="form-control">
                         <option value="0">Elije una categoria</option>
                         @foreach (var category in categories)
                         {
@@ -115,33 +117,43 @@
 
 @code {
 
+    [Parameter]
+    public int Id { get; set; }
     Product product = new Product();
-    [Parameter] public int Id { get; set; }
+
+    private string brandId = "0";
+    private string categoryId = "0";
 
     List<Brand> brands = new List<Brand>();
     List<Category> categories = new List<Category>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (Id > 0) Search();
-
         New();
+
+        brands = await brandServices.GetAll();
+        categories = await categoryServices.GetAll();
     }
 
     protected void New()
     {
         product = new Product();
+        brandId = "0";
+        categoryId = "0";
     }
 
     protected void Save()
     {
+        product.BrandId = Convert.ToInt32(brandId);
+        product.CategoryId = Convert.ToInt32(categoryId);
 
         try
         {
             if (productServices.Save(product).IsCompleted)
             {
-                New();
                 toast.ShowSuccess("Se guardo el producto! 😄");
+                New();
             }
             else
             {
