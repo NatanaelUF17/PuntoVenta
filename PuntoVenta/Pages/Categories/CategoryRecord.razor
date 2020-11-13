@@ -1,0 +1,151 @@
+﻿@page "/Categorias"
+@page "/Categorias/{Id:int}" 
+
+@inject CategoryServices categoryServices
+@inject IToastService toast
+
+<EditForm Model="category" OnValidSubmit="Save">
+    <DataAnnotationsValidator/>
+
+    <div class="card">
+        @*Header*@
+        <div class="card-header">
+            <div class="form-group">
+                <h5>Categorias</h5>
+            </div>
+        </div>
+
+        @*Body*@
+        <div class="card-body">
+            <form>
+                <div class="form-row align-items-md-center align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="buscar">Buscar</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="category.Id" class="form-control col-4" />
+                                <div class="form-group-append">
+                                    <button class="btn btn-primary input-group-text" @onclick="Search">
+                                        <span class="oi oi-eye"></span> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Name*@
+                <div class="form-group">
+                    <label for="NombreCategoriaTextBox">Nombre Categoria</label>
+                    <InputText @bind-Value="category.Name" class="form-control"/>
+                    <ValidationMessage For="@(() => category.Name)" />
+                    <small>
+                        Ingresar el(os) nombres de la categoria
+                    </small>
+                </div>
+            </form>
+
+        </div>
+
+        @*Fotter*@
+        <div class="card-footer">
+            <div class="form-group text-center">
+                <button type="button" class="btn btn-primary" @onclick="New">
+                    <span class="oi oi-plus"></span> Nuevo
+                </button>
+                <button type="submit" class="btn btn-success" @onclick="Save">
+                    <span class="oi oi-document">Guardar</span>
+                </button>
+                <button type="button" class="btn btn-danger" @onclick="Delete">
+                    <span class="oi oi-delete">Eliminar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    Category category = new Category();
+    [Parameter] public int Id { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        if (Id > 0) Search();
+
+        New();
+
+        return base.OnInitializedAsync();
+    }
+
+    protected void New()
+    {
+        category = new Category();
+    }
+
+    protected void Save()
+    {
+
+        try
+        {
+            if(categoryServices.Save(category).IsCompleted)
+            {
+                New();
+                toast.ShowSuccess("Se guardo la categoria! 😄");
+            }
+            else
+            {
+                toast.ShowWarning("No se pudo guardar la categoria! 😣");
+
+            }
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+
+    protected async void Delete()
+    {
+        try
+        {
+            await categoryServices.Delete(category.Id);
+            toast.ShowSuccess("Se elimino la categoria! 😄");
+            New();
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+
+    protected async void Search()
+    {
+
+        try
+        {
+            if(category.Id > 0)
+            {
+                var isFound = await categoryServices.GetOne(category.Id);
+
+                if(isFound != null)
+                {
+                    this.category = isFound;
+                    Id = this.category.Id;
+                    toast.ShowSuccess("Categoria encontrada! 😄");
+                }
+                else
+                {
+                    toast.ShowWarning("No existe una categoria con ese id 🙄");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+} 

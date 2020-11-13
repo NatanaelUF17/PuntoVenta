@@ -17,28 +17,35 @@ namespace PuntoVenta.Services
 
         public async Task Save(Sale sale)
         {
+            if (sale.Id > 0)
+            {
+                await Update(sale);
+            }
+            else
+            {
+                await Insert(sale);
+            }
+        }
+
+        public async Task Insert(Sale sale)
+        {
             _context.Sales.Add(sale);
             await _context.SaveChangesAsync();
         }
 
         public async Task Update(Sale sale)
         {
-            if(sale.Id > 0)
-            {
-                _context.Entry(sale).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                await Save(sale);
-            }
+            _context.Entry(sale).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         } 
 
-        public async Task Delete(Sale sale)
+        public async Task Delete(int id)
         {
-            if(sale.Id > 0)
+            var isFound = await GetOne(id);
+
+            if (isFound.Id > 0)
             {
-                _context.Sales.Remove(sale);
+                _context.Sales.Remove(isFound);
                 await _context.SaveChangesAsync();
             }
             else

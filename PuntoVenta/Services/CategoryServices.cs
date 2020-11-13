@@ -17,28 +17,35 @@ namespace PuntoVenta.Services
 
         public async Task Save(Category category)
         {
+            if(category.Id > 0)
+            {
+                await Update(category);
+            }
+            else
+            {
+                await Insert(category);
+            }
+        }
+
+        public async Task Insert(Category category)
+        {
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
         }
 
         public async Task Update(Category category)
         {
-            if(category.Id > 0)
-            {
-                _context.Entry(category).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                await Save(category);
-            }
+            _context.Entry(category).State = EntityState.Modified;
+            await _context.SaveChangesAsync();        
         }
 
-        public async Task Delete(Category category)
+        public async Task Delete(int id)
         {
-            if(category.Id > 0)
+            var isFound = await GetOne(id);
+
+            if(isFound.Id > 0)
             {
-                _context.Categories.Remove(category);
+                _context.Categories.Remove(isFound);
                 await _context.SaveChangesAsync();
             }
             else
@@ -54,7 +61,7 @@ namespace PuntoVenta.Services
 
         public async Task<Category> GetOne(int id)
         {
-            return await _context.Categories.FindAsync(id);
+            return await _context.Categories.FindAsync(id);       
         }
     }
 }

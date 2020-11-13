@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PuntoVenta.AppDbContext;
 using PuntoVenta.Services;
+using Blazored.Toast;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace PuntoVenta
             services.AddServerSideBlazor();
             services.AddDbContext<Context>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddBlazoredToast();
             services.AddScoped<ProductServices>();
             services.AddScoped<ClientServices>();
             services.AddScoped<SaleServices>();

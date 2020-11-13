@@ -17,28 +17,35 @@ namespace PuntoVenta.Services
 
         public async Task Save(Brand brand)
         {
+            if (brand.Id > 0)
+            {
+                await Update(brand);
+            }
+            else
+            {
+                await Insert(brand);
+            }
+        }
+
+        public async Task Insert(Brand brand)
+        {
             _context.Brands.Add(brand);
             await _context.SaveChangesAsync();
         }
 
         public async Task Update(Brand brand)
         {
-            if(brand.Id > 0)
-            {
-                _context.Entry(brand).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                await Save(brand);
-            }
+            _context.Entry(brand).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(Brand brand)
+        public async Task Delete(int id)
         {
-            if(brand.Id > 0)
+            var isFound = await GetOne(id);
+
+            if (isFound.Id > 0)
             {
-                _context.Brands.Remove(brand);
+                _context.Brands.Remove(isFound);
                 await _context.SaveChangesAsync();
             }
             else
