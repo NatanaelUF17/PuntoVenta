@@ -46,7 +46,7 @@
                     </small>
                 </div>
 
-                @*LastName*@
+                @*Brand*@
                 <div class="form-group">
                     <label>Marca</label>
                     <InputSelect @bind-Value="@brandId" class="form-control">
@@ -62,6 +62,7 @@
                     </small>
                 </div>
 
+                @*Category*@
                 <div class="form-group">
                     <label>Categoria</label>
                     <InputSelect @bind-Value="@categoryId" class="form-control">
@@ -77,6 +78,7 @@
                     </small>
                 </div>
 
+                @*Stock*@
                 <div class="form-group">
                     <label>Stock</label>
                     <InputNumber @bind-Value="product.Stock" class="form-control" />
@@ -86,6 +88,7 @@
                     </small>
                 </div>
 
+                @*Price*@
                 <div class="form-group">
                     <label>Precio</label>
                     <InputNumber @bind-Value="product.Price" class="form-control" />
@@ -98,7 +101,7 @@
 
         </div>
 
-        @*Fotter*@
+        @*Footer*@
         <div class="card-footer">
             <div class="form-group text-center">
                 <button type="button" class="btn btn-primary" @onclick="New">
