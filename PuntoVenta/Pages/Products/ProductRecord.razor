@@ -129,7 +129,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id > 0) Search();
+        if (Id > 0) await Search();
         New();
 
         brands = await brandServices.GetAll();
@@ -143,16 +143,23 @@
         categoryId = "0";
     }
 
-    protected void Save()
+    protected async Task Save()
     {
         product.BrandId = Convert.ToInt32(brandId);
         product.CategoryId = Convert.ToInt32(categoryId);
 
         try
         {
-            if (productServices.Save(product).IsCompleted)
+            if (product != null)
             {
+                await productServices.Save(product);
                 toast.ShowSuccess("Se guardo el producto! 😄");
+                New();
+            }
+            else if(product.Id > 0)
+            {
+                await productServices.Save(product);
+                toast.ShowSuccess("Se actualizo el producto! 😄");
                 New();
             }
             else
@@ -168,7 +175,7 @@
         }
     }
 
-    protected async void Delete()
+    protected async Task Delete()
     {
         try
         {
@@ -183,7 +190,7 @@
         }
     }
 
-    protected async void Search()
+    protected async Task Search()
     {
 
         try
