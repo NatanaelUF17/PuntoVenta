@@ -16,7 +16,7 @@ namespace PuntoVenta.Models
         public int ClientId { get; set; }
         public Client Client { get; set; }
         [DataType(DataType.DateTime), DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime SaleDate { get; set; }
-        public List<SaleDetail> SaleDetails { get; set; }
+        public DateTime Date { get; set; }
+        public virtual List<SaleDetail> SaleDetails { get; set; } = new List<SaleDetail>();
     }
 }

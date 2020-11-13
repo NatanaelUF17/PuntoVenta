@@ -19,6 +19,8 @@ namespace PuntoVenta.Models
         public Sale Sale { get; set; }
         [Required(ErrorMessage = "Debe haber una cantidad para realizar la venta!")]
         public int Quantity { get; set; }
-        public double Total { get { return Quantity * Product.Price;  } }
+        [Required(ErrorMessage = "Debe ingresar un precio para realizar la venta!")]
+        public double Price { get; set; }
+        public double Total { get; set; }
     }
 }
