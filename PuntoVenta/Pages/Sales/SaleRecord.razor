@@ -4,6 +4,7 @@
 @inject SaleServices saleServices
 @inject ClientServices clientServices
 @inject ProductServices productServices  
+@inject IToastService toast
 
 <EditForm Model="sale" OnValidSubmit="Save">
     <DataAnnotationsValidator />
@@ -102,7 +103,7 @@
                             <InputNumber @bind-Value="quantity" class="form-control" />
                             <ValidationMessage For="(() => saleDetail.Quantity)" />
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-primary" @onclick="AgregarAlDetalle">
+                                <button type="button" class="btn btn-primary" @onclick="AddSaleDetail">
                                     <i class="oi oi-plus" aria-hidden="true" /> Agregar
                                 </button>
                             </div>
@@ -129,7 +130,7 @@
                                 <td>@item.Quantity</td>
                                 <td>@item.Price.ToString("N2")</td>
                                 <td>@item.Total.ToString("N2")</td>
-                                <td><button type="button" class="btn btn-danger" @onclick="Delete">Remover</button></td>
+                                <td><button type="button" class="btn btn-danger" @onclick="(() => RemoveSaleDetail(item))">Remover</button></td>
                             </tr>
                         }
                     </tbody>
@@ -184,7 +185,22 @@
         products = await productServices.GetAll();
     }
 
-    async void AgregarAlDetalle() {
+    void Search() { }
+    void Delete() { }
+    void Save() { }
+
+    void New()
+    {
+        sale = new Sale();
+        sale.Date = DateTime.Now;
+        clientId = "0";
+        saleDetailId = "0";
+        productId = "0";
+        quantity = 0;
+        price = 0;
+    }
+
+    protected async void AddSaleDetail() {
 
         var isProductFound = await productServices.GetOne(Convert.ToInt32(this.productId));
 
@@ -198,15 +214,17 @@
                 Total = quantity * price
             }
         );
-        Console.WriteLine($"{price} {productId} {quantity}");
     }
 
-    void Search() { }
-    void Delete() { }
-    void Save() { }
-    void New()
+    protected void RemoveSaleDetail(SaleDetail saleDetail)
     {
-        sale = new Sale();
-        sale.Date = DateTime.Now;
+        try
+        {
+            sale.SaleDetails.Remove(saleDetail);
+        }
+        catch (Exception e)
+        {
+            toast.ShowError($"{e.Message}");
+        }
     }
 }
