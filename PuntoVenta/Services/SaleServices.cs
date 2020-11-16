@@ -61,7 +61,9 @@ namespace PuntoVenta.Services
 
         public async Task<Sale> GetOne(int id)
         {
-            return await _context.Sales.FindAsync(id);
+            return await _context.Sales.Where(i => i.Id == id)
+                .Include(s => s.SaleDetails)
+                .FirstOrDefaultAsync();
         }
     }
 }

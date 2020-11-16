@@ -179,17 +179,81 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (Id > 0) await Search();
+
         New();
 
         clients = await clientServices.GetAll();
         products = await productServices.GetAll();
     }
 
-    void Search() { }
-    void Delete() { }
-    void Save() { }
+    protected async Task Search()
+    {
+        try
+        {
+            if(sale.Id > 0)
+            {
+                var isFoundSale = await saleServices.GetOne(sale.Id);
 
-    void New()
+                if(isFoundSale != null)
+                {
+                    this.sale = isFoundSale;
+                    Id = this.sale.Id;
+                    this.clientId = sale.Client.Id.ToString();
+
+                    toast.ShowSuccess("Venta encontrada! 😄");
+                }
+                else
+                {
+                    toast.ShowWarning("No se encontro esa venta! 🙄");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+
+    protected void Save()
+    {
+        try
+        {
+            sale.ClientId = Convert.ToInt32(this.clientId);
+
+            if (saleServices.Save(sale).IsCompleted)
+            {
+                toast.ShowSuccess("Se guardo correctamente 😄");
+                New();
+            }
+            else
+            {
+                toast.ShowWarning("Verifique los campos 🙄");
+            }
+        }
+        catch (Exception e)
+        {
+            toast.ShowError($"{e.Message}");
+        }
+    }
+
+    protected async Task Delete()
+    {
+        try
+        {
+            await saleServices.Delete(sale.Id);
+            toast.ShowSuccess("Se elimino la venta! 😄");
+            New();
+        }
+        catch (Exception e)
+        {
+
+            toast.ShowError($"{e.Message}");
+        }
+    }
+
+    protected void New()
     {
         sale = new Sale();
         sale.Date = DateTime.Now;
@@ -205,12 +269,12 @@
         var isProductFound = await productServices.GetOne(Convert.ToInt32(this.productId));
 
         sale.SaleDetails.Add(new SaleDetail()
-        {        
+        {
             Price = price,
             ProductId = isProductFound.Id,
             Product = isProductFound,
             Quantity = quantity,
-            Total = quantity * price     
+            Total = quantity * price
         });
     }
 
