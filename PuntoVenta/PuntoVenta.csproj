@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.Toast" Version="3.1.2" />
+    <PackageReference Include="Blazored.Typeahead" Version="4.4.1" />
     <PackageReference Include="MatBlazor" Version="2.7.0" />
     <PackageReference Include="Microsoft.EntityframeworkCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityframeworkCore.Sqlite" Version="5.0.0" />
