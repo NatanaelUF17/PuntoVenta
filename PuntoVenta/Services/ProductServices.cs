@@ -63,5 +63,18 @@ namespace PuntoVenta.Services
         {
             return await _context.Products.FindAsync(id);
         }
+
+        public async Task ReduceStock(int id, int stock)
+        {
+            var isFoundProduct = await GetOne(id);
+
+            if (isFoundProduct != null)
+            {
+                if(isFoundProduct.Stock > 0)
+                {
+                    isFoundProduct.Stock = isFoundProduct.Stock - stock; 
+                }
+            }
+        }
     }
 }

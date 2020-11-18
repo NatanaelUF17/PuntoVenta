@@ -232,6 +232,7 @@
             {
                 if (saleServices.Save(sale).IsCompleted)
                 {
+                    await productServices.ReduceStock(product.Id, product.Stock);
                     toast.ShowSuccess("Se guardo correctamente 😄");
 
                     if (product.Stock <= 20)

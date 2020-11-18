@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PuntoVenta.Services;
 
 namespace PuntoVenta.Services
 {
@@ -14,6 +15,7 @@ namespace PuntoVenta.Services
         public SaleServices(Context context) { _context = context; }
 
         private readonly Context _context;
+        ProductServices ProductServices;
 
         public async Task Save(Sale sale)
         {
