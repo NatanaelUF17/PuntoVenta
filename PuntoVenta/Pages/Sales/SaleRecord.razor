@@ -216,16 +216,31 @@
         }
     }
 
-    protected void Save()
+    protected async Task Save()
     {
         try
         {
             sale.ClientId = Convert.ToInt32(this.clientId);
+            var isFoundProduct = await productServices.GetOne(Convert.ToInt32(productId));
+            product = isFoundProduct;
 
-            if (saleServices.Save(sale).IsCompleted)
+            if (product.Stock == 0)
             {
-                toast.ShowSuccess("Se guardo correctamente 😄");
-                New();
+                toast.ShowError($"No tiene unidades disponibles de {product.Name}");
+            }
+            else if (product.Stock > 0)
+            {
+                if (saleServices.Save(sale).IsCompleted)
+                {
+                    toast.ShowSuccess("Se guardo correctamente 😄");
+
+                    if (product.Stock <= 20)
+                    {
+                        toast.ShowWarning($"Quedan {product.Stock} unidades de {product.Name}");
+                    }
+
+                    New();
+                }
             }
             else
             {
