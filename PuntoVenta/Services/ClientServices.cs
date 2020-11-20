@@ -29,39 +29,87 @@ namespace PuntoVenta.Services
 
         public async Task Insert(Client client)
         {
-            _context.Clients.Add(client);
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(client != null)
+                {
+                    _context.Clients.Add(client);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Update(Client client)
         {
-            _context.Entry(client).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(client != null)
+                {
+                    _context.Entry(client).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Delete(int  id)
         {
             var isFound = await GetOne(id);
 
-            if (isFound.Id > 0)
+            try
             {
-                _context.Clients.Remove(isFound);
-                await _context.SaveChangesAsync();
+                if (isFound.Id > 0)
+                {
+                    _context.Clients.Remove(isFound);
+                    await _context.SaveChangesAsync();
+                }
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception();
+                Console.WriteLine($"{e.Message}");
             }
         }
 
         public async Task<List<Client>> GetAll()
         {
-            return await _context.Clients.ToListAsync();
+            List<Client> clients = new List<Client>();
+
+            try
+            {
+                clients = await _context.Clients.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return clients;
         }
 
         public async Task<Client> GetOne(int id)
         {
-            return await _context.Clients.FindAsync(id);
+            Client client = new Client();
+
+            try
+            {
+                if(id > 0)
+                {
+                    client = await _context.Clients.FindAsync(id);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return client;
         }
     }
 }

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PuntoVenta.Services;
 
 namespace PuntoVenta.Services
 {
@@ -15,7 +14,6 @@ namespace PuntoVenta.Services
         public SaleServices(Context context) { _context = context; }
 
         private readonly Context _context;
-        ProductServices ProductServices;
 
         public async Task Save(Sale sale)
         {
@@ -31,41 +29,89 @@ namespace PuntoVenta.Services
 
         public async Task Insert(Sale sale)
         {
-            _context.Sales.Add(sale);
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(sale != null)
+                {
+                    _context.Sales.Add(sale);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Update(Sale sale)
         {
-            _context.Entry(sale).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(sale != null)
+                {
+                    _context.Entry(sale).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         } 
 
         public async Task Delete(int id)
         {
             var isFound = await GetOne(id);
 
-            if (isFound.Id > 0)
+            try
             {
-                _context.Sales.Remove(isFound);
-                await _context.SaveChangesAsync();
+                if (isFound.Id > 0)
+                {
+                    _context.Sales.Remove(isFound);
+                    await _context.SaveChangesAsync();
+                }
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception();
+                Console.WriteLine($"{e.Message}");
             }
         }
 
         public async Task<List<Sale>> GetAll()
         {
-            return await _context.Sales.ToListAsync();
+            List<Sale> sales = new List<Sale>();
+
+            try
+            {
+                sales = await _context.Sales.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return sales;
         }
 
         public async Task<Sale> GetOne(int id)
         {
-            return await _context.Sales.Where(i => i.Id == id)
-                .Include(s => s.SaleDetails)
-                .FirstOrDefaultAsync();
+            Sale sale = new Sale();
+
+            try
+            {
+                if(id > 0)
+                {
+                    sale = await _context.Sales.Where(i => i.Id == id)
+                    .Include(s => s.SaleDetails)
+                    .FirstOrDefaultAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return sale;
         }
     }
 }

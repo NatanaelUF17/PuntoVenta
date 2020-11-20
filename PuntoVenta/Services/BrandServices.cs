@@ -29,39 +29,87 @@ namespace PuntoVenta.Services
 
         public async Task Insert(Brand brand)
         {
-            _context.Brands.Add(brand);
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(brand != null)
+                {
+                    _context.Brands.Add(brand);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Update(Brand brand)
         {
-            _context.Entry(brand).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(brand != null)
+                {
+                    _context.Entry(brand).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Delete(int id)
         {
             var isFound = await GetOne(id);
 
-            if (isFound.Id > 0)
+            try
             {
-                _context.Brands.Remove(isFound);
-                await _context.SaveChangesAsync();
+                if (isFound.Id > 0)
+                {
+                    _context.Brands.Remove(isFound);
+                    await _context.SaveChangesAsync();
+                }
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception();
+                Console.WriteLine($"{e.Message}");
             }
         }
 
         public async Task<List<Brand>> GetAll()
         {
-            return await _context.Brands.ToListAsync();
+            List<Brand> brands = new List<Brand>();
+
+            try
+            {
+                brands = await _context.Brands.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return brands;
         }
 
         public async Task<Brand> GetOne(int id)
         {
-            return await _context.Brands.FindAsync(id);
+            Brand brand = new Brand();
+
+            try
+            {
+                if(id > 0)
+                {
+                    brand = await _context.Brands.FindAsync(id);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return brand;
         }
     }
 }

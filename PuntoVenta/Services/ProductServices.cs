@@ -29,51 +29,107 @@ namespace PuntoVenta.Services
 
         public async Task Insert(Product product)
         {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(product != null)
+                {
+                    _context.Products.Add(product);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Update(Product product)
         {
-            _context.Entry(product).State = EntityState.Modified;
-            await _context.SaveChangesAsync();        
+            try
+            {
+                if(product != null)
+                {
+                    _context.Entry(product).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }     
         }
 
         public async Task Delete(int id)
         {
             var isFound = await GetOne(id);
 
-            if (isFound.Id > 0)
+            try
             {
-                _context.Products.Remove(isFound);
-                await _context.SaveChangesAsync();
+                if (isFound.Id > 0)
+                {
+                    _context.Products.Remove(isFound);
+                    await _context.SaveChangesAsync();
+                }
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception();
+                Console.WriteLine($"{e.Message}");
             }
         }
 
         public async Task<List<Product>> GetAll()
         {
-            return await _context.Products.ToListAsync();
+            List<Product> products = new List<Product>();
+
+            try
+            {
+                products = await _context.Products.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return products;
         }
 
         public async Task<Product> GetOne(int id)
         {
-            return await _context.Products.FindAsync(id);
+            Product product = new Product();
+
+            try
+            {
+                if(id > 0)
+                {
+                    product = await _context.Products.FindAsync(id);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return product;
         }
 
         public async Task ReduceStock(int id, int stock)
         {
             var isFoundProduct = await GetOne(id);
 
-            if (isFoundProduct != null)
+            try
             {
-                if(isFoundProduct.Stock > 0)
+                if (isFoundProduct != null)
                 {
-                    isFoundProduct.Stock = isFoundProduct.Stock - stock; 
+                    if (isFoundProduct.Stock > 0)
+                    {
+                        isFoundProduct.Stock = isFoundProduct.Stock - stock;
+                        await Update(isFoundProduct);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
             }
         }
     }

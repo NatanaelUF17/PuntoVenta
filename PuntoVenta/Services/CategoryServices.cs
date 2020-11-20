@@ -29,39 +29,87 @@ namespace PuntoVenta.Services
 
         public async Task Insert(Category category)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+            try
+            {
+                if(category != null)
+                {
+                    _context.Categories.Add(category);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Update(Category category)
         {
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();        
+            try
+            {
+                if (category != null)
+                {
+                    _context.Entry(category).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
 
         public async Task Delete(int id)
         {
             var isFound = await GetOne(id);
 
-            if(isFound.Id > 0)
+            try
             {
-                _context.Categories.Remove(isFound);
-                await _context.SaveChangesAsync();
+                if (isFound.Id > 0)
+                {
+                    _context.Categories.Remove(isFound);
+                    await _context.SaveChangesAsync();
+                }
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception();
+                Console.WriteLine($"{e.Message}");
             }
         }
 
         public async Task<List<Category>> GetAll()
         {
-            return await _context.Categories.ToListAsync();
+            List<Category> categories = new List<Category>();
+
+            try
+            {
+                categories = await _context.Categories.ToListAsync();
+            } 
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return categories;
         }
 
         public async Task<Category> GetOne(int id)
         {
-            return await _context.Categories.FindAsync(id);       
+            Category category = new Category();
+
+            try
+            {
+                if(id > 0)
+                {
+                    category = await _context.Categories.FindAsync(id);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
+
+            return category;
         }
     }
 }
