@@ -23,5 +23,6 @@ namespace PuntoVenta.Models
         public int Stock { get; set; }
         [Required(ErrorMessage = "El producto debe contener un precio!")]
         public double Price { get; set; }
+
     }
 }
